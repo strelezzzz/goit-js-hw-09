@@ -3,19 +3,19 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const refs = {
+  blockTimer: document.querySelector('.timer'),
   start: document.querySelector('button[data-start]'),
+  days: document.querySelector('span[data-days]'),
+  hours: document.querySelector('span[data-hours]'),
+  minutes: document.querySelector('span[data-minutes]'),
+  seconds: document.querySelector('span[data-seconds]'),
 };
-//використаємо  session storage для того щоб зберегти значення selectedDates[0];
-let SELECTEDTIME = 'savedTimeInStorage';
+
+const SELECTEDTIME = 'savedTimeInStorage'; //використаємо  session storage для того щоб зберегти значення selectedDates[0];
 
 refs.start.setAttribute('disabled', true); //Кнопка «Start» повинна бути неактивною доти, доки користувач не вибрав дату в майбутньому.
-refs.start.addEventListener('click', onStart);
 // Натисканням на кнопку «Start» починається відлік часу до обраної дати з моменту натискання.
-function onStart() {
-  console.log('You pushed start!');
-  timer.start();
-  refs.start.setAttribute('disabled', true);
-}
+refs.start.addEventListener('click', onStart);
 
 const options = {
   enableTime: true,
@@ -33,27 +33,47 @@ const options = {
     //   Якщо користувач вибрав валідну дату (в майбутньому), кнопка «Start» стає активною.
     console.log('active button');
     refs.start.removeAttribute('disabled');
-    SELECTEDTIME = sessionStorage.setItem('savedTimeInStorage', selectedDates[0]);
+    sessionStorage.setItem('savedTimeInStorage', selectedDates[0]);
   },
 };
 
-flatpickr('#datetime-picker', options);
+flatpickr('#datetime-picker', options); //запускаємо плагін з опціями;
 
 const timer = {
   start() {
-    const currentTime = Date.now();
-
-    setInterval(() => {
-      const futereTime = new Date(sessionStorage.getItem(SELECTEDTIME)).getTime();
-      console.log(futereTime - currentTime);
+    const futureTime = new Date(sessionStorage.getItem(SELECTEDTIME)).getTime(); //отримаємо вибраний час в мс , з комірки пам'яті;
+    // console.log('futureTime is', futureTime);
+    const intervalId = setInterval(() => {
+      const currentTime = Date.now(); //отримуємо поточний час
+      const delta = futureTime - currentTime; //обчислимо різницю між вибраним часом і поточним
+      if (delta > 0) {
+        const { days, hours, minutes, seconds } = addLeadingZero(convertMs(delta));
+        // console.log(addLeadingZero(convertMs(delta)));
+        refs.days.textContent = days;
+        refs.hours.textContent = hours;
+        refs.minutes.textContent = minutes;
+        refs.seconds.textContent = seconds;
+        console.log(delta);
+      } else {
+        clearInterval(intervalId);
+        refs.start.removeAttribute('disabled'); //робимо активною кнопку старт;
+        console.log('Timer is Stoped. You can choose a new Date!');
+      }
     }, 1000);
   },
 };
 
+function onStart() {
+  console.log('You pushed start!');
+  timer.start();
+  refs.start.setAttribute('disabled', true);
+}
+
 // В інтерфейсі таймера необхідно додавати 0, якщо в числі менше двох символів
 function addLeadingZero(value) {
   for (const key in value) {
-    value[key] = String(value[key]).padStart(2, '0');
+    //для кожного ключа в об'єкті
+    value[key] = String(value[key]).padStart(2, '0'); //змінимо значення ключа
   }
   return value;
 }
@@ -77,6 +97,7 @@ function convertMs(ms) {
 
   return { days, hours, minutes, seconds };
 }
-//
-console.log(convertMs(24140000));
-console.log(addLeadingZero(convertMs(24140000)));
+
+refs.blockTimer.style.display = 'flex';
+refs.blockTimer.style.justifyContent = 'space-evenly';
+refs.blockTimer.style.backgroundColor = 'gray';
