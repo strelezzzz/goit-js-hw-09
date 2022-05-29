@@ -5,12 +5,15 @@ import 'flatpickr/dist/flatpickr.min.css';
 const refs = {
   start: document.querySelector('button[data-start]'),
 };
+//використаємо  session storage для того щоб зберегти значення selectedDates[0];
+let SELECTEDTIME = 'savedTimeInStorage';
 
 refs.start.setAttribute('disabled', true); //Кнопка «Start» повинна бути неактивною доти, доки користувач не вибрав дату в майбутньому.
 refs.start.addEventListener('click', onStart);
 // Натисканням на кнопку «Start» починається відлік часу до обраної дати з моменту натискання.
 function onStart() {
   console.log('You pushed start!');
+  timer.start();
   refs.start.setAttribute('disabled', true);
 }
 
@@ -21,30 +24,31 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     console.log(selectedDates[0]);
+
     // Якщо користувач вибрав дату в минулому, покажи window.alert() з текстом "Please choose a date in the future".
-    if (selectedDates[0] - Date.now() < 0) {
+    if (selectedDates[0] - options.defaultDate < 0) {
+      console.log(options.defaultDate);
       return alert('Please choose a date in the future');
     }
     //   Якщо користувач вибрав валідну дату (в майбутньому), кнопка «Start» стає активною.
+    console.log('active button');
     refs.start.removeAttribute('disabled');
+    SELECTEDTIME = sessionStorage.setItem('savedTimeInStorage', selectedDates[0]);
   },
 };
 
 flatpickr('#datetime-picker', options);
-// console.log(options.onClose.selectedDates[0]);
 
-// const timer = {
-//   start() {
-//     const startTime = Date.now();
+const timer = {
+  start() {
+    const currentTime = Date.now();
 
-//     setInterval(() => {
-//       const currentTime = Date.now();
-//       console.log(startTime - currentTime);
-//     }, 1000);
-//   },
-// };
-
-// timer.start();
+    setInterval(() => {
+      const futereTime = new Date(sessionStorage.getItem(SELECTEDTIME)).getTime();
+      console.log(futereTime - currentTime);
+    }, 1000);
+  },
+};
 
 // В інтерфейсі таймера необхідно додавати 0, якщо в числі менше двох символів
 function addLeadingZero(value) {
