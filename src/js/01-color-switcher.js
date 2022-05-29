@@ -9,14 +9,24 @@ const refs = {
   stopButton: document.querySelector('button[data-stop]'),
 };
 
-refs.startButton.addEventListener('click', onStartClick);
-refs.stopButton.addEventListener('click', onStopClick);
+let intervalId = null;
+isActive = false;
 
-function onStartClick() {
-  console.log('START');
-  console.log(getRandomHexColor());
-}
+refs.startButton.addEventListener('click', () => {
+  if (isActive) {
+    return console.log('"START" is already pressed');
+  }
+  isActive = true;
+  intervalId = setInterval(() => {
+    console.log('START');
+    console.log(getRandomHexColor());
+  }, 1000);
+});
 
-function onStopClick() {
+refs.stopButton.addEventListener('click', () => {
+  clearInterval(intervalId);
+  isActive = false;
   console.log('STOP');
-}
+});
+
+console.log(intervalId);
