@@ -7,15 +7,15 @@ form.addEventListener('submit', onFormSubmit);
 // =======================================================
 function onFormSubmit(evt) {
   evt.preventDefault();
-  let firstDelay = evt.target.delay.value;
-  const delay = evt.target.step.value;
-  const amount = evt.target.amount.value;
-  // console.log(firstDelay, delay, amount);
+  let delay = parseInt(evt.target.delay.value);
+  const delayStep = parseInt(evt.target.step.value);
+  const amount = parseInt(evt.target.amount.value);
+  //
   evt.currentTarget.reset();
   // визвемо функцію <<createPromise>>  кількість разів = amount
   for (let position = 0; position < amount; position++) {
     createPromise(position, delay);
-    firstDelay += delay;
+    delay += delayStep;
   }
 }
 // ====================================================
