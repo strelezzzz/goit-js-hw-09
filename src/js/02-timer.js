@@ -1,6 +1,7 @@
 // Напиши скрипт таймера, який здійснює зворотний відлік до певної дати. Такий таймер може використовуватися у блогах та інтернет-магазинах, сторінках реєстрації подій, під час технічного обслуговування тощо.
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import Notiflix from 'notiflix';
 
 const refs = {
   blockTimer: document.querySelector('.timer'),
@@ -28,7 +29,7 @@ const options = {
     // Якщо користувач вибрав дату в минулому, покажи window.alert() з текстом "Please choose a date in the future".
     if (selectedDates[0] - options.defaultDate < 0) {
       console.log(options.defaultDate);
-      return alert('Please choose a date in the future');
+      return Notiflix.Notify.warning('Please choose a date in the future');
     }
     //   Якщо користувач вибрав валідну дату (в майбутньому), кнопка «Start» стає активною.
     console.log('active button');
