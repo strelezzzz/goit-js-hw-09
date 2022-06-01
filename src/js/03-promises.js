@@ -14,7 +14,7 @@ function onFormSubmit(evt) {
   //
   evt.currentTarget.reset();
   // визвемо функцію <<createPromise>>  кількість разів = amount
-  for (let position = 0; position < amount; position++) {
+  for (let position = 1; position <= amount; position++) {
     createPromise(position, delay);
     delay += delayStep;
   }
