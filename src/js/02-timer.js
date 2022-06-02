@@ -4,6 +4,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 import Notiflix from 'notiflix';
 
 const refs = {
+  input: document.querySelector('#datetime-picker'),
   blockTimer: document.querySelector('.timer'),
   start: document.querySelector('button[data-start]'),
   days: document.querySelector('span[data-days]'),
@@ -25,7 +26,6 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     console.log(selectedDates[0]);
-
     // Якщо користувач вибрав дату в минулому, покажи window.alert() з текстом "Please choose a date in the future".
     if (selectedDates[0] - options.defaultDate < 0) {
       console.log(options.defaultDate);
@@ -38,7 +38,7 @@ const options = {
   },
 };
 
-flatpickr('#datetime-picker', options); //запускаємо плагін з опціями;
+flatpickr('input', options); //запускаємо плагін з опціями;
 
 const timer = {
   start() {
@@ -67,6 +67,7 @@ const timer = {
 function onStart() {
   console.log('You pushed start!');
   timer.start();
+  refs.input.setAttribute('disabled', true);
   refs.start.setAttribute('disabled', true);
 }
 
